@@ -2,6 +2,7 @@ import{useState, useEffect} from "react";
 import Board from "./Board";
 import GameOver from "./GameOver";
 import GameState from "./GameState";
+import Reset from "./Reset";
 
 
 const PLAYER_X ='X';
@@ -75,6 +76,10 @@ if(tiles[index] !== null){
    }
 };
 
+const handleReset = ()=>{
+    console.log("reset")
+}
+
 useEffect(()=>{
     checkWinner(tiles, setStrikeClass, setGameState);
 },[tiles])
@@ -86,6 +91,7 @@ useEffect(()=>{
     strikeClass={strikeClass}
     />
     <GameOver gameState={gameState} />
+    <Reset gameState={gameState} onReset={handleReset}/>
 </div>
     );
 }
