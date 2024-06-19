@@ -3,7 +3,13 @@ import Board from "./Board";
 import GameOver from "./GameOver";
 import GameState from "./GameState";
 import Reset from "./Reset";
+import GameOverSoundAsset from "../sounds/game_over.wav";
+import clickSoundAsset from "../sounds/click.wav";
 
+const gameOverSound = new Audio(GameOverSoundAsset)
+gameOverSound.volume = 0.2;
+const clicksound= new Audio(clickSoundAsset)
+clicksound.volume = .5;
 
 const PLAYER_X ='X';
 const PLAYER_O ='O';
@@ -37,17 +43,16 @@ function checkWinner(tiles, setStrikeClass, setGameState) {
             }
             else{
                 setGameState(GameState.playerOWins);  
-                
+
             }
             return;
         }
     }
 
-const areAllTilesFilledIn= tiles.every((tile)=> tile !== null)
+const areAllTilesFilledIn = tiles.every((tile) => tile !== null );
 if(areAllTilesFilledIn){
     setGameState(GameState.draw);
 }
-
 }
 
 function TicTacToe() {
@@ -76,13 +81,30 @@ if(tiles[index] !== null){
    }
 };
 
-const handleReset = ()=>{
-    console.log("reset")
-}
+const handleReset = () =>{
+ setGameState(GameState.inProgress);
+ setTitles(Array(9).fill(null));
+ setPlayerTurn(PLAYER_X);
+ setStrikeClass(null);
+};
 
 useEffect(()=>{
     checkWinner(tiles, setStrikeClass, setGameState);
-},[tiles])
+},[tiles]);
+
+useEffect(() => {
+    if (tiles.some((tile)=> tile !== null)){
+     clicksound.play();   
+    }
+},[tiles]);
+
+useEffect(()=>{
+    if(gameState !== GameState.inProgress){
+        gameOverSound.play();
+
+    }
+}, [gameState]
+);
 
     return(
 <div>
@@ -91,7 +113,7 @@ useEffect(()=>{
     strikeClass={strikeClass}
     />
     <GameOver gameState={gameState} />
-    <Reset gameState={gameState} onReset={handleReset}/>
+    <Reset gameState={gameState} onReset={handleReset} />    
 </div>
     );
 }
